@@ -18,6 +18,7 @@ package io.fusionauth.plugin.spi.security;
 import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Used to encrypt user passwords.
@@ -25,6 +26,13 @@ import java.util.UUID;
  * @author Brian Pontarelli
  */
 public interface PasswordEncryptor {
+  /**
+   * This pattern represents a standard MIME compatible Base64 encoding scheme.
+   * <p>
+   * This pattern can be used to validate most salts.
+   */
+  Pattern Base64SaltPattern = Pattern.compile("^[0-9A-Za-z+/]+=*$");
+
   /**
    * @return The default factor for this PasswordEncryptor.
    */
@@ -56,5 +64,20 @@ public interface PasswordEncryptor {
     buf.putLong(second.getLeastSignificantBits());
     buf.putLong(second.getMostSignificantBits());
     return Base64.getEncoder().encodeToString(buf.array());
+  }
+
+  /**
+   * Validates the salt for this PasswordEncryptor. In most cases this is not necessary to implement this method.
+   * <p>
+   * Most of the password encryptors will use a Base64 encoded salt.
+   * <p>
+   * If you are using a Bcrypt or Bcrypt like algorithm which uses a non-MIME compatible Base64 encoding you will want to
+   * implement this to ensure the salt is corrected validated.
+   *
+   * @param salt the salt!
+   * @return true if the salt is valid for this encryptor, false if invalid.
+   */
+  default boolean validateSalt(String salt) {
+    return Base64SaltPattern.matcher(salt).find();
   }
 }
