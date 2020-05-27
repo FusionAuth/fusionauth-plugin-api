@@ -3,7 +3,7 @@
  */
 savantVersion = "1.0.0"
 
-project(group: "io.fusionauth", name: "fusionauth-plugin-api", version: "1.16.1", licenses: ["ApacheV2_0"]) {
+project(group: "io.fusionauth", name: "fusionauth-plugin-api", version: "1.17.0", licenses: ["ApacheV2_0"]) {
   workflow {
     standard()
   }
@@ -22,7 +22,7 @@ project(group: "io.fusionauth", name: "fusionauth-plugin-api", version: "1.16.1"
  */
 
 dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:1.0.2")
-java = loadPlugin(id: "org.savantbuild.plugin:java:1.0.2")
+java = loadPlugin(id: "org.savantbuild.plugin:java:1.2.0")
 idea = loadPlugin(id: "org.savantbuild.plugin:idea:1.0.1")
 release = loadPlugin(id: "org.savantbuild.plugin:release-git:${savantVersion}")
 
@@ -61,7 +61,7 @@ target(name: "print-dependency-tree", description: "Prints the dependency tree")
 }
 
 target(name: "publish", description: "Publish to MVN repo", dependsOn: ["clean", "compile"]) {
-  if (new ProcessBuilder('mvn', 'deploy', '-Prelease').inheritIO().start().waitFor() != 0) {
+  if (new ProcessBuilder('mvn', 'clean', 'deploy', '-Prelease').inheritIO().start().waitFor() != 0) {
     fail("deploy failed")
   }
 }
