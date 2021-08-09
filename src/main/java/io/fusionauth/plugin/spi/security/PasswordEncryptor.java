@@ -39,13 +39,13 @@ public interface PasswordEncryptor {
   int defaultFactor();
 
   /**
-   * Encrypts the given password using the given salt.
+   * Hashes the given password using the given salt.
    *
    * @param password The password to encrypt.
    * @param salt     The salt that can optionally be used to increase the security of the password encryption. This is expected to be a
    *                 Base64 encoded byte array.
    * @param factor   The load or iteration factor for this encryption operation.
-   * @return The encrypted password in a Base64 encoded string.
+   * @return The hashed password in a Base64 encoded string.
    */
   String encrypt(String password, String salt, int factor);
 
