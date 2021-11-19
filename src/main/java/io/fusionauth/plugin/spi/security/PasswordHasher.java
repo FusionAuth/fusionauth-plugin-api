@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, FusionAuth, All Rights Reserved
+ * Copyright (c) 2021, FusionAuth, All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  *
  * @author Brian Pontarelli
  */
-public interface PasswordEncryptor {
+public interface PasswordHasher {
   /**
    * This pattern represents a standard MIME compatible Base64 encoding scheme.
    * <p>
@@ -34,7 +34,7 @@ public interface PasswordEncryptor {
   Pattern Base64SaltPattern = Pattern.compile("^[0-9A-Za-z+/]+=*$");
 
   /**
-   * @return The default factor for this PasswordEncryptor.
+   * @return The default factor for this PasswordHasher.
    */
   int defaultFactor();
 
@@ -50,7 +50,7 @@ public interface PasswordEncryptor {
   String encrypt(String password, String salt, int factor);
 
   /**
-   * Generates a random salt that is compatible with the PasswordEncryptor. The default implementation uses two UUIDs
+   * Generates a random salt that is compatible with the PasswordHasher. The default implementation uses two UUIDs
    * and Base 64 encodes them.
    *
    * @return The salt.
@@ -67,7 +67,7 @@ public interface PasswordEncryptor {
   }
 
   /**
-   * Validates the salt for this PasswordEncryptor. In most cases this is not necessary to implement this method.
+   * Validates the salt for this PasswordHasher. In most cases this is not necessary to implement this method.
    * <p>
    * Most of the password hashes will use a Base64 encoded salt.
    * <p>
