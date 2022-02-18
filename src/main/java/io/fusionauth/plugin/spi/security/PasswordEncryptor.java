@@ -31,7 +31,7 @@ public interface PasswordEncryptor {
    * <p>
    * This pattern can be used to validate most salts.
    */
-  Pattern Base64SaltPattern = Pattern.compile("^[0-9A-Za-z+/]+=*$");
+  Pattern Base64SaltPattern = Pattern.compile("^[A-Za-z0-9+/]+=*$");
 
   /**
    * @return The default factor for this PasswordEncryptor.
