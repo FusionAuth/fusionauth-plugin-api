@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, FusionAuth, All Rights Reserved
+ * Copyright (c) 2018-2022, FusionAuth, All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.fusionauth.plugin.spi.security;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -29,9 +30,9 @@ public interface PasswordHasher {
   /**
    * This pattern represents a standard MIME compatible Base64 encoding scheme.
    * <p>
-   * This pattern can be used to validate most salts.
+   * This pattern can be used to validate most salts. This won't necessarily confirm the correct length of the salt.
    */
-  Pattern Base64SaltPattern = Pattern.compile("^[0-9A-Za-z+/]+=*$");
+  Pattern Base64SaltPattern = Pattern.compile("^[A-Za-z0-9+/]+=*$");
 
   /**
    * @return The default factor for this PasswordHasher.
@@ -78,6 +79,12 @@ public interface PasswordHasher {
    * @return true if the salt is valid for this hashing implementation, false if invalid.
    */
   default boolean validateSalt(String salt) {
-    return Base64SaltPattern.matcher(salt).find();
+    // Ok characters, to verify the correct padding and byte length, also try to decode.
+    try {
+      Base64.getDecoder().decode(salt.getBytes(StandardCharsets.UTF_8));
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }
