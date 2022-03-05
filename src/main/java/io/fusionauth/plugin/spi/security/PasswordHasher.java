@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  *
  * @author Brian Pontarelli
  */
-public interface PasswordHasher {
+public interface PasswordHasher extends PasswordEncryptor {
   /**
    * This pattern represents a standard MIME compatible Base64 encoding scheme.
    * <p>
@@ -40,15 +40,12 @@ public interface PasswordHasher {
   int defaultFactor();
 
   /**
-   * Hashes the given password using the given salt.
-   *
-   * @param password The password to hash.
-   * @param salt     The salt that can optionally be used to increase the security of the password hash. This is expected to be a
-   *                 Base64 encoded byte array.
-   * @param factor   The load or iteration factor for this hashing operation.
-   * @return The hashed password in a Base64 encoded string.
+   * @deprecated Do not implement this method. This method exists for backwards compatibility.
    */
-  String encrypt(String password, String salt, int factor);
+  @Deprecated
+  default String encrypt(String password, String salt, int factor) {
+    return hash(password, salt, factor);
+  }
 
   /**
    * Generates a random salt that is compatible with the PasswordHasher. The default implementation uses two UUIDs
@@ -66,6 +63,17 @@ public interface PasswordHasher {
     buf.putLong(second.getMostSignificantBits());
     return Base64.getEncoder().encodeToString(buf.array());
   }
+
+  /**
+   * Hashes the given password using the given salt.
+   *
+   * @param password The password to hash.
+   * @param salt     The salt that can optionally be used to increase the security of the password hash. This is expected to be a
+   *                 Base64 encoded byte array.
+   * @param factor   The load or iteration factor for this hashing operation.
+   * @return The hashed password in a Base64 encoded string.
+   */
+  String hash(String password, String salt, int factor);
 
   /**
    * Validates the salt for this PasswordHasher. In most cases this is not necessary to implement this method.
