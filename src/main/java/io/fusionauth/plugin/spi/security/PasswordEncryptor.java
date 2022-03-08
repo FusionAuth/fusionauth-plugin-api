@@ -79,7 +79,9 @@ public interface PasswordEncryptor {
    * @return true if the salt is valid for this hashing implementation, false if invalid.
    */
   default boolean validateSalt(String salt) {
-    // Ok characters, to verify the correct padding and byte length, also try to decode.
+    // Note, the more common Base64 character set is defined at the top of this file in a regular expression.
+    // You can use that as well, but it doesn't validate that the string is a properly encoded value. It only
+    // ensures the string does not contain any characters what would otherwise not be in the base64 character set.
     try {
       Base64.getDecoder().decode(salt.getBytes(StandardCharsets.UTF_8));
       return true;
