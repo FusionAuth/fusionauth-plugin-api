@@ -68,6 +68,15 @@ public interface PasswordEncryptor {
   }
 
   /**
+   * Optionally return a human-readable name that will be used to select this plugin in the UI.
+   *
+   * @return a display name, or null
+   */
+  default String pluginDisplayName() {
+    return null;
+  }
+
+  /**
    * Validates the salt for this PasswordEncryptor. In most cases this is not necessary to implement this method.
    * <p>
    * Most of the password hashes will use a Base64 encoded salt.
