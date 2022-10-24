@@ -13,7 +13,6 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-savantVersion = "2.0.0-RC.1"
 
 project(group: "io.fusionauth", name: "fusionauth-plugin-api", version: "1.41.0-EAP.20221022", licenses: ["ApacheV2_0"]) {
   workflow {
@@ -39,10 +38,10 @@ project(group: "io.fusionauth", name: "fusionauth-plugin-api", version: "1.41.0-
  * Define Plugins
  */
 
-dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:${savantVersion}")
-java = loadPlugin(id: "org.savantbuild.plugin:java:${savantVersion}")
-idea = loadPlugin(id: "org.savantbuild.plugin:idea:${savantVersion}")
-release = loadPlugin(id: "org.savantbuild.plugin:release-git:${savantVersion}")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:2.0.0-RC.2")
+java = loadPlugin(id: "org.savantbuild.plugin:java:2.0.0-RC.2")
+idea = loadPlugin(id: "org.savantbuild.plugin:idea:2.0.0-RC.2")
+release = loadPlugin(id: "org.savantbuild.plugin:release-git:2.0.0-RC.2")
 
 /*
  * Plugin Settings
