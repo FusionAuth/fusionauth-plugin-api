@@ -6,9 +6,15 @@ Currently, there is a single plugin SPI for FusionAuth that allows customers to 
 
 You can learn more about FusionAuth plugins by visiting our documentation page at [https://fusionauth.io/docs/v1/tech/plugins/writing-a-plugin](https://fusionauth.io/docs/v1/tech/plugins/writing-a-plugin).
 
-## Building this project
+## Building 
 
-If you would like to clone and build this project yourself, you will need to install the Savant build tool if you don't already have it installed. Follow these instructions to install Savant.
+### Building with Maven
+
+```bash
+$ mvn install
+```
+
+### Building with Savant
 
 ```bash
 $ mkdir ~/savant
