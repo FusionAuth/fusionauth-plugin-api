@@ -6,6 +6,7 @@ Currently, there is a single plugin SPI for FusionAuth that allows customers to 
 
 You can learn more about FusionAuth plugins by visiting our documentation page at [https://fusionauth.io/docs/v1/tech/plugins/writing-a-plugin](https://fusionauth.io/docs/v1/tech/plugins/writing-a-plugin).
 
+
 ## Building 
 
 ### Building with Maven
