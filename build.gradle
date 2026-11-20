@@ -33,6 +33,11 @@ tasks.withType(JavaCompile).configureEach {
   options.compilerArgs << "-Xlint:-options"
 }
 
+// Doc comments may be tags-only (e.g. just @return); skip doclint's "missing" checks but keep the rest
+tasks.withType(Javadoc).configureEach {
+  options.addBooleanOption("Xdoclint:-missing", true)
+}
+
 // Public releases go to Maven Central through the Sonatype Central Portal (publishToMavenCentral). Credentials are personal
 // config: set mavenCentralUsername and mavenCentralPassword (a Central Portal user token) in ~/.gradle/gradle.properties,
 // never in this repo. -SNAPSHOT versions go to the Central Portal snapshot repository.
