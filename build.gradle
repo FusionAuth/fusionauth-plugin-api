@@ -1,0 +1,107 @@
+/*
+ * Copyright (c) 2018-2026, FusionAuth, All Rights Reserved
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
+plugins {
+  id "java-library"
+  id "signing"
+  alias(libs.plugins.gitversion)
+  alias(libs.plugins.maven.publish)
+}
+
+group = "io.fusionauth"
+
+gitVersion {
+  tagPrefix = ""
+}
+
+// Customers compile their plugins against this API, so keep Java 8 bytecode even though the build runs on Java 25
+tasks.withType(JavaCompile).configureEach {
+  options.release = 8
+  // JDK 25 warns that release 8 is obsolete; it is still supported and intentional here
+  options.compilerArgs << "-Xlint:-options"
+}
+
+// Public releases go to Maven Central through the Sonatype Central Portal (publishToMavenCentral). Credentials are personal
+// config: set mavenCentralUsername and mavenCentralPassword (a Central Portal user token) in ~/.gradle/gradle.properties,
+// never in this repo. -SNAPSHOT versions go to the Central Portal snapshot repository.
+mavenPublishing {
+  publishToMavenCentral(true)
+  signAllPublications()
+  pom {
+    name = "FusionAuth Plugin API"
+    description = "This jar provides the plugin interfaces."
+    url = "https://fusionauth.io"
+    licenses {
+      license {
+        name = "The Apache License, Version 2.0"
+        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    }
+    developers {
+      developer {
+        name = "Brian Pontarelli"
+        email = "brian@fusionauth.io"
+        organization = "FusionAuth"
+        organizationUrl = "https://fusionauth.io"
+      }
+      developer {
+        name = "Daniel DeGroff"
+        email = "daniel@fusionauth.io"
+        organization = "FusionAuth"
+        organizationUrl = "https://fusionauth.io"
+      }
+    }
+    scm {
+      connection = "scm:git:ssh://github.com:FusionAuth/fusionauth-plugin-api"
+      url = "https://github.com/FusionAuth/fusionauth-plugin-api"
+    }
+  }
+}
+
+// Private builds can also publish to CodeArtifact: publishAllPublicationsToCodeArtifactRepository. The repository only
+// exists when a CodeArtifact URL is configured (codeArtifactUrl property or CODEARTIFACT_URL), so public builds never see it.
+if (gradle.codeArtifactUrl) {
+  publishing {
+    repositories {
+      maven {
+        name = "codeArtifact"
+        url = gradle.codeArtifactUrl
+        credentials {
+          username = "aws"
+          password = gradle.codeArtifactToken.get()
+        }
+      }
+    }
+  }
+}
+
+// The aggregate publish task uploads to every configured repository at once, and a Maven Central release cannot be undone.
+// Fail before anything runs so each release names its target explicitly.
+gradle.taskGraph.whenReady { graph ->
+  if (graph.hasTask(tasks.named("publish").get())) {
+    throw new GradleException("Do not run 'publish', which uploads to every repository. Run 'publishToMavenCentral' for Maven Central " +
+        "or 'publishAllPublicationsToCodeArtifactRepository' for CodeArtifact.")
+  }
+}
+
+// Published artifacts must be signed with a local gpg key. The key name is personal config: set
+// signing.gnupg.keyName=<fingerprint> in ~/.gradle/gradle.properties (never in this repo) and unlock the key in gpg-agent first.
+// Signing is only required for a remote publish; build and publishToMavenLocal work without a key configured.
+signing {
+  setRequired { gradle.taskGraph.allTasks.any { it instanceof PublishToMavenRepository } }
+  if (project.hasProperty("signing.gnupg.keyName")) {
+    useGpgCmd()
+  }
+}

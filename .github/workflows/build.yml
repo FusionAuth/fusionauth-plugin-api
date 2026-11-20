@@ -1,0 +1,28 @@
+---
+name: build
+
+on:
+  - push
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: /usr/bin/bash -l -e -o pipefail {0}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          # gitversion computes the version from tags
+          fetch-depth: 0
+      # Installs Java and Gradle from mise.toml. No CodeArtifact URL is set, so dependencies come from Maven Central.
+      - name: setup mise
+        uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d # v5.2.4
+        with:
+          version: 2026.11.7
+      # There are no tests; build compiles the API and assembles the jars
+      - name: build
+        run: |
+          gradle --version
+          gradle build

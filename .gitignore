@@ -1,4 +1,5 @@
 build
-target
+.gradle/
 **/.DS_Store
-.savant/cache
+.idea/modules/*.main.iml
+.idea/modules/*.test.iml
